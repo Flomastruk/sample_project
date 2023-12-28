@@ -1,0 +1,17 @@
+version: '0'
+services:
+  custom_service:
+    # image: python:3.12-bookworm
+    build: .
+    container_name: custom_container_name
+    restart: always
+    tty: true
+    # command: sleep infinity
+    volumes:
+      # this is the *bind* mount
+      # - ../../projects:/workspace
+      - ../:/workspace
+      # this mirrors volume defined in top-level `volumes` section
+      - data:/data
+volumes:
+  data:
