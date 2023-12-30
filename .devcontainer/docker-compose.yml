@@ -9,7 +9,6 @@ services:
     # command: sleep infinity
     volumes:
       # this is the *bind* mount
-      # - ../../projects:/workspace
       - ../:/workspace
       # this mirrors volume defined in top-level `volumes` section
       - data:/data

@@ -13,8 +13,8 @@ The approach leverages Google Cloud Platform for hardware considerations, VSCode
 # Requirements
 There are three layers interacting in the suggested setup:
 1. [Local Setup](#local-setup) &mdash; deals with software requirements on the physical computer
-2. [Remote Host Setup](#remote-host-setup) &mdash; setup of VM on Google Cloud Platform
-3. [Environment Setup](#environment-setup) &mdash; Docker container deployed on VM
+1. [Remote Host Setup](#remote-host-setup) &mdash; setup of VM on Google Cloud Platform
+1. [Environment Setup](#environment-setup) &mdash; Docker container deployed on VM
 
 By design, the complexity of the setup is pushed away to latter layers where more frequent changes are more common. The first layer is most trivial and uniform accross possible setups. The second step confines hardware customization and is rather trivial for the vast majority of needs. The third step is the most customizable and isolates all environment considerations.
 
@@ -127,9 +127,11 @@ services:
     image: python:3.12-bookworm
 ...
 ```
+### Running Dev Container
+Once all configuration files are in place, invoke from Command Palette _"Dev Containers: Open Folder in Container"_ to open the directory enclosing `.devcontainer`. Read logs for debugging if necessary.
 
 # Alternative Setups
-Instead of working in Dev Container spawned by VSCode, consider attaching to a custom running container on a VM. This reduces dependency on how VM chooses to set up containers
+Instead of working in Dev Container spawned by VSCode, consider attaching to a custom running container on a VM. This reduces dependency on how VM chooses to set up containers.
 
 Consider utilizing [Google Container-Optimized OS](https://cloud.google.com/container-optimized-os/docs). This is achieved by using Container section when setting up a VM. This may be non-trivial because one has to SSH directly into a container using Remote SSH extension as opposed to Dev Containers extention (see  stackoverflow [_VSCode Remote SSH to a docker container running on GCP VM_](https://stackoverflow.com/questions/77705736/vscode-remote-ssh-to-a-docker-container-running-on-gcp-vm)).
 
