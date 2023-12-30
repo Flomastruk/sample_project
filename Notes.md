@@ -116,9 +116,11 @@ One useful option is to reference `requirements.txt` with python package specica
 ### [`docker-compose.yml`](https://docs.docker.com/compose/compose-file/)
 For file should be specified following official Docker Compose file reference. One of the purposes of using Docker Compose framework is the ability to combine multiple interacting components. For instance, defining [Docker Volumes](https://docs.docker.com/storage/volumes/) or [Bind Mounts](https://docs.docker.com/storage/bind-mounts/) to make data available and reusable outside of the container.
 
-Important keywords of `docker-compose.yml` are `build` or `image` specifications depening on whether an image should be taken directly or build from a Dockerfile, `tty` set to true (technicality of Dev Container setup) and `volumes` section for custom volumes and bind mounts.
+Important keywords of `docker-compose.yml` are `build` or `image` specifications depening on whether an image should be taken directly or build from a Dockerfile; `tty` set to true; `restart` set to always (technicality of Dev Container setup) and `volumes` section for custom volumes and bind mounts.
 
 Importantly, one of the services running a Docker container within `docker-compose.yml` must have the name mtching  `service` keyword value in `devcontainer.json`. This is the container that will be utilized by VSCode as Dev Container.
+
+Technical note &mdash; when using `build` with `context` keyword, Dockerfile will be run with the its own working directory following the default behavior, however, relative paths within context will be enabled.
 ```
 ...
 services:
@@ -136,3 +138,6 @@ Instead of working in Dev Container spawned by VSCode, consider attaching to a c
 Consider utilizing [Google Container-Optimized OS](https://cloud.google.com/container-optimized-os/docs). This is achieved by using Container section when setting up a VM. This may be non-trivial because one has to SSH directly into a container using Remote SSH extension as opposed to Dev Containers extention (see  stackoverflow [_VSCode Remote SSH to a docker container running on GCP VM_](https://stackoverflow.com/questions/77705736/vscode-remote-ssh-to-a-docker-container-running-on-gcp-vm)).
 
 Set up with no external IP address and Docker image sitting in Artifactory. This may be tricky because VM doesn't have access to the web outside of cloud setup.
+
+# Other
+Tex setup for VSCode can be done following [LaTeX-Workshop](https://github.com/James-Yu/LaTeX-Workshop) instructions. In particular, they have sample `.devcontainer` configurations. Corresponding VSCode extension must be added to `.devcontainer.json`.

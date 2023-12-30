@@ -26,7 +26,7 @@
 				"ms-toolsai.jupyter",
 				"ms-toolsai.jupyter-keymap",
 				"ms-toolsai.jupyter-renderers",
-				"james-yu.latex-workshop",
+				// "james-yu.latex-workshop",
 			]
 		}
 	},
