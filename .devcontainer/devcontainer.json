@@ -19,7 +19,6 @@
 	"workspaceFolder":"/workspace/",
 	"dockerComposeFile": "docker-compose.yml",
 
-	
 	"customizations": {
 		"vscode": {
 			"extensions": [

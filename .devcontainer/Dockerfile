@@ -2,6 +2,6 @@ FROM python:3.12-bookworm
 
 RUN pip install --upgrade pip
 
-COPY requirements.txt .
+COPY ../reqs/requirements.txt reqs/
 
-RUN pip install -r requirements.txt
+RUN pip install -r reqs/requirements.txt
