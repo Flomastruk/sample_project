@@ -38,7 +38,7 @@ Some one time credential settings may need to be configured once, follow directi
 Once an appropriate Google Cloud VM is created (see [Remote Host](#remote-host-setup)) one needs to configure local files to establish SSH connection from local computer to remote host.
 
 You can either edit your local `.ssh/config` file directly, or run _"Remote-SSH: Open SSH Configuration File"_ from VSCode Command Palette. Place the following content in the file replacing bracketed expressions `[VM_ID]`, `[VM_NAME]`, `[PROJECT_NAME]`, `[ZONE_NAME]`, `[USER_NAME]`, `USER_ID` with values appropriate to your setup.
-```
+```docker
 Host [VM_NAME]
     HostName compute.[VM_ID]
     IdentityFile C:\Users\[USER_NAME]\.ssh\google_compute_engine
@@ -121,7 +121,7 @@ Important keywords of `docker-compose.yml` are `build` or `image` specifications
 Importantly, one of the services running a Docker container within `docker-compose.yml` must have the name mtching  `service` keyword value in `devcontainer.json`. This is the container that will be utilized by VSCode as Dev Container.
 
 Technical note &mdash; when using `build` with `context` keyword, Dockerfile will be run with the its own working directory following the default behavior, however, relative paths within context will be enabled.
-```
+```yaml
 ...
 services:
 # "custom_service" must be referenced in devcontainer.json
@@ -138,6 +138,52 @@ Instead of working in Dev Container spawned by VSCode, consider attaching to a c
 Consider utilizing [Google Container-Optimized OS](https://cloud.google.com/container-optimized-os/docs). This is achieved by using Container section when setting up a VM. This may be non-trivial because one has to SSH directly into a container using Remote SSH extension as opposed to Dev Containers extention (see  stackoverflow [_VSCode Remote SSH to a docker container running on GCP VM_](https://stackoverflow.com/questions/77705736/vscode-remote-ssh-to-a-docker-container-running-on-gcp-vm)).
 
 Set up with no external IP address and Docker image sitting in Artifactory. This may be tricky because VM doesn't have access to the web outside of cloud setup.
+
+
+# Enabling GPU in Containers
+Enabling GPU within a container requires a few steps:
+
+1. Refresh system packages `sudo apt update && sudo apt upgrade`
+1. Enabling [contrib repositiory](https://linuxcapable.com/how-to-enable-contrib-and-non-free-repos-on-debian-linux/) `sudo sed -i 's/contrib main/main contrib/g' /etc/apt/sources.list.d/debian.sources`
+1. Install NVIDIA drivers [official instructions](https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/latest/debian.html#debian-installation) (specific [driver settings](https://developer.nvidia.com/cuda-downloads) can be looked up on NVIDIA website)
+```bash
+apt install linux-headers-$(uname -r)
+
+wget https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64/cuda-keyring_1.1-1_all.deb
+sudo dpkg -i cuda-keyring_1.1-1_all.deb
+sudo apt update
+apt -V -y install nvidia-open
+```
+4. Optionally check the output of `nvidia-smi` to ensure driver has been installed successfully
+4. Install [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
+```bash
+sudo apt-get update && sudo apt-get install -y -no-install-recommends gnupg2
+
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+  && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
+    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+
+sudo apt-get update
+export NVIDIA_CONTAINER_TOOLKIT_VERSION=1.19.1-1
+
+sudo apt-get install -y \
+    nvidia-container-toolkit=${NVIDIA_CONTAINER_TOOLKIT_VERSION} \
+    nvidia-container-toolkit-base=${NVIDIA_CONTAINER_TOOLKIT_VERSION} \
+    libnvidia-container-tools=${NVIDIA_CONTAINER_TOOLKIT_VERSION} \
+    libnvidia-container1=${NVIDIA_CONTAINER_TOOLKIT_VERSION}
+```
+6. Restart the instance; optionally check GPUs are available from within containers: `docker run -it --rm --gpus all ubuntu nvidia-smi`
+6. Expose GPU in Docker container by adding the following [Docker Compose specifications](https://docs.docker.com/compose/how-tos/gpu-support/) inside the service  block (same level as `build`, `container_name`, `image` etc...)
+```yaml
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+```
 
 # Other
 Tex setup for VSCode can be done following [LaTeX-Workshop](https://github.com/James-Yu/LaTeX-Workshop) instructions. In particular, they have sample `.devcontainer` configurations. Corresponding VSCode extension must be added to `.devcontainer.json`.
