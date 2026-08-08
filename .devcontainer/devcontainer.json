@@ -22,19 +22,33 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
+				// "charliermarsh.ruff",
+				"ms-python.vscode-pylance",
 				"ms-python.python",
+				// "ms-toolsai.datawrangler",
 				"ms-toolsai.jupyter",
 				"ms-toolsai.jupyter-keymap",
 				"ms-toolsai.jupyter-renderers",
 				// "james-yu.latex-workshop",
-			]
+			],
+			// "settings": {
+			// 	// editor.formatOnSave doesn't work but it's the recommended way of adding settings generally
+			// 	//  https://code.visualstudio.com/docs/devcontainers/containers#_container-specific-settings
+			// 	"editor.formatOnSave": true,
+			// 	"[python]": {
+			// 		"editor.defaultFormatter": "charliermarsh.ruff"
+			// 	}
+			// }
 		}
 	},
 
 	// "runArgs": ["--name", "vsc-test"],
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
+	"features": {
+		"ghcr.io/devcontainers/features/node:2.1.0": {},
+		"ghcr.io/anthropics/devcontainer-features/claude-code:1.0": {},
+	},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
