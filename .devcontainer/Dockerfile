@@ -6,6 +6,6 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/
 
 COPY pyproject.toml ./
 
-ENV UV_PROJECT_ENVIRONMENT=/.venv
+ENV UV_PROJECT_ENVIRONMENT=/opt/venv
 
-RUN uv sync --no-dev
+RUN uv sync --no-dev && chmod -R a+w /opt/venv
