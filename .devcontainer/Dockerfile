@@ -8,4 +8,4 @@ COPY pyproject.toml ./
 
 ENV UV_PROJECT_ENVIRONMENT=/opt/venv
 
-RUN uv sync --no-dev && chmod -R a+w /opt/venv
+RUN uv sync --no-dev --no-cache && chmod -R a+w /opt/venv

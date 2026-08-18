@@ -47,10 +47,14 @@
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
 		"ghcr.io/devcontainers/features/common-utils:2": {
-			"username": "${localEnv:USER}"
+			"username": "${localEnv:USER}",
+			"upgradePackages": false,
+			"installZsh": false,
+			"installOhMyZsh": false
 		},
 		"ghcr.io/devcontainers/features/node:2.1.0": {},
 		"ghcr.io/anthropics/devcontainer-features/claude-code:1.0": {},
+		"./features/npm-group-write": {},
 	},
 
 	"remoteUser": "${localEnv:USER}",
